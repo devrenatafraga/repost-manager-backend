@@ -1,0 +1,38 @@
+name: ADR
+description: Decisão de arquitetura pendente (próximas ondas)
+title: "[adr] "
+labels: ["type:adr", "area:docs"]
+body:
+  - type: textarea
+    id: decisao
+    attributes:
+      label: Decisão a registrar
+      description: Qual pergunta de arquitetura precisa de um ADR?
+    validations:
+      required: true
+  - type: textarea
+    id: bloqueia
+    attributes:
+      label: O que esta decisão bloqueia
+      description: Issues ou áreas que não podem avançar sem o ADR.
+    validations:
+      required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto conhecido
+      description: Restrições, preferências e links úteis.
+    validations:
+      required: false
+  - type: dropdown
+    id: onda
+    attributes:
+      label: Onda sugerida
+      options:
+        - Onda 2 — núcleo
+        - Onda 3 — blog público
+        - Onda 4 — tema e widgets
+        - Onda 5 — mídia e operação
+        - Sob demanda
+    validations:
+      required: true

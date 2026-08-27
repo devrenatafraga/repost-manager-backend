@@ -1,0 +1,44 @@
+name: Feature
+description: Nova funcionalidade ou chore rastreável a um ADR
+title: "[feat] "
+labels: ["type:feat"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Descreva a mudança em português. Título do commit/PR permanece em inglês.
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: O que precisa ser feito e por quê.
+    validations:
+      required: true
+  - type: textarea
+    id: aceite
+    attributes:
+      label: Critérios de aceite
+      description: Lista objetiva do que precisa estar pronto para fechar a issue.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: input
+    id: adr
+    attributes:
+      label: ADR de origem
+      description: Ex. ADR-0003 ou caminho docs/adr/0003-....md
+      placeholder: ADR-000X
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - backend
+        - manager
+        - blog
+        - docs
+    validations:
+      required: true

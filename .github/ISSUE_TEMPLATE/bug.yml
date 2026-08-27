@@ -1,0 +1,38 @@
+name: Bug
+description: Comportamento incorreto
+title: "[bug] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: atual
+    attributes:
+      label: Comportamento atual
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Como reproduzir
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - backend
+        - manager
+        - blog
+        - docs
+    validations:
+      required: true

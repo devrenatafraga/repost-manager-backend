@@ -1,0 +1,15 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scaffold guard
+        run: |
+          test -f README.md
+          echo "Gradle CI will replace this job when scaffold lands (ADR-0004)."
