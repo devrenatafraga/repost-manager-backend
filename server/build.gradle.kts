@@ -16,6 +16,8 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:${property("ktorVersion")}")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-status-pages:${property("ktorVersion")}")
+    implementation("io.github.smiley4:ktor-openapi:${property("ktorOpenApiVersion")}")
+    implementation("io.github.smiley4:schema-kenerator-serialization:${property("schemaKeneratorVersion")}")
     implementation("ch.qos.logback:logback-classic:${property("logbackVersion")}")
 
     testImplementation("io.ktor:ktor-server-test-host:${property("ktorVersion")}")
