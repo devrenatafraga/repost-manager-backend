@@ -21,7 +21,9 @@ data class DatabaseConfig(
             when {
                 rawUrl.startsWith("jdbc:") -> rawUrl
                 rawUrl.startsWith("postgresql://") -> "jdbc:$rawUrl"
-                else -> error("Unsupported DATABASE_URL format: expected jdbc: or postgresql://")
+                rawUrl.startsWith("postgres://") ->
+                    "jdbc:postgresql://${rawUrl.removePrefix("postgres://")}"
+                else -> error("Unsupported DATABASE_URL format: expected jdbc:, postgresql:// or postgres://")
             }
     }
 }

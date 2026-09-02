@@ -79,6 +79,23 @@ class FlywayMigrationTest {
                         "SELECT 1 FROM pg_roles WHERE rolname = 'repost_public_readonly'",
                     )
                 assertTrue(readonlyRole.next())
+
+                val publicTables =
+                    listOf("blogs", "posts", "pages", "tags", "post_tags", "media", "themes", "widgets", "settings")
+                for (table in publicTables) {
+                    val rs =
+                        stmt.executeQuery(
+                            "SELECT has_table_privilege('repost_public_readonly', 'public.$table', 'SELECT')",
+                        )
+                    assertTrue(rs.next() && rs.getBoolean(1), "readonly role must read $table")
+                }
+
+                val usersAccess =
+                    stmt.executeQuery(
+                        "SELECT has_table_privilege('repost_public_readonly', 'public.users', 'SELECT')",
+                    )
+                assertTrue(usersAccess.next())
+                assertEquals(false, usersAccess.getBoolean(1), "readonly role must not read users")
             }
         }
     }

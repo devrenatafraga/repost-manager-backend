@@ -3,8 +3,17 @@ plugins {
     id("org.flywaydb.flyway") version "11.1.0"
 }
 
+// Keep in sync with DatabaseConfig.toJdbcUrl
+fun toJdbcUrl(rawUrl: String): String =
+    when {
+        rawUrl.startsWith("jdbc:") -> rawUrl
+        rawUrl.startsWith("postgresql://") -> "jdbc:$rawUrl"
+        rawUrl.startsWith("postgres://") -> "jdbc:postgresql://${rawUrl.removePrefix("postgres://")}"
+        else -> error("Unsupported DATABASE_URL format: expected jdbc:, postgresql:// or postgres://")
+    }
+
 flyway {
-    url = System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/repost"
+    url = toJdbcUrl(System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/repost")
     user = System.getenv("DATABASE_USER") ?: "repost"
     password = System.getenv("DATABASE_PASSWORD") ?: "repost"
     locations = arrayOf("classpath:db/migration")
