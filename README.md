@@ -14,7 +14,9 @@ Decisões de arquitetura: [repost-documentation](https://github.com/devrenatafra
 
 ## Desenvolvimento local
 
-Requisitos: **JDK 25 (LTS)** e **Gradle 9.7.0** (via wrapper `./gradlew`).
+Requisitos: **JDK 21 (LTS)** e **Gradle 9.7.0** (via wrapper `./gradlew`).
+
+Kotlin ainda não publica bytecode para JDK 25; o toolchain fica em 21 até suporte estável.
 
 ```bash
 ./gradlew build
