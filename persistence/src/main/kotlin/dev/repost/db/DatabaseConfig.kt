@@ -2,17 +2,18 @@ package dev.repost.db
 
 data class DatabaseConfig(
     val jdbcUrl: String,
-    val user: String?,
-    val password: String?,
+    val user: String,
+    val password: String,
 ) {
     companion object {
         fun fromEnvironment(): DatabaseConfig? {
             val rawUrl = System.getenv("DATABASE_URL") ?: return null
-            val jdbcUrl = toJdbcUrl(rawUrl)
+            val user = System.getenv("DATABASE_USER") ?: return null
+            val password = System.getenv("DATABASE_PASSWORD") ?: return null
             return DatabaseConfig(
-                jdbcUrl = jdbcUrl,
-                user = System.getenv("DATABASE_USER")?.takeIf { it.isNotBlank() },
-                password = System.getenv("DATABASE_PASSWORD"),
+                jdbcUrl = toJdbcUrl(rawUrl),
+                user = user,
+                password = password,
             )
         }
 
