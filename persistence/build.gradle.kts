@@ -1,22 +1,10 @@
 plugins {
     kotlin("jvm")
-    id("org.flywaydb.flyway") version "11.1.0"
+    application
 }
 
-// Keep in sync with DatabaseConfig.toJdbcUrl
-fun toJdbcUrl(rawUrl: String): String =
-    when {
-        rawUrl.startsWith("jdbc:") -> rawUrl
-        rawUrl.startsWith("postgresql://") -> "jdbc:$rawUrl"
-        rawUrl.startsWith("postgres://") -> "jdbc:postgresql://${rawUrl.removePrefix("postgres://")}"
-        else -> error("Unsupported DATABASE_URL format: expected jdbc:, postgresql:// or postgres://")
-    }
-
-flyway {
-    url = toJdbcUrl(System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/repost")
-    user = System.getenv("DATABASE_USER") ?: "repost"
-    password = System.getenv("DATABASE_PASSWORD") ?: "repost"
-    locations = arrayOf("classpath:db/migration")
+application {
+    mainClass.set("dev.repost.db.FlywayMigrateCliKt")
 }
 
 dependencies {
@@ -32,4 +20,11 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.register<JavaExec>("flywayMigrate") {
+    group = "database"
+    description = "Apply Flyway migrations (requires DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD)"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("dev.repost.db.FlywayMigrateCliKt")
 }
