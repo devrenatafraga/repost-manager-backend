@@ -2,11 +2,30 @@
 
 API do Repost (Kotlin + Ktor): superfícies `/api/v1/admin/**` e `/api/v1/public/**`.
 
-Decisões de arquitetura: ver [repost-documentation](https://github.com/devrenatafraga/repost-documentation/tree/main/docs/adr).
+Decisões de arquitetura: [repost-documentation](https://github.com/devrenatafraga/repost-documentation/tree/main/docs/adr).
 
-## Status
+## Módulos
 
-Scaffold inicial — implementação segue issues do milestone **M1 Fundacao**.
+| Módulo | Papel |
+| --- | --- |
+| `server` | Aplicação Ktor (entrypoint) |
+| `admin-api` | Rotas e lógica da superfície admin |
+| `public-api` | Rotas e lógica da superfície pública (sem dependência de `admin-api`) |
+
+## Desenvolvimento local
+
+Requisitos: JDK 25 (LTS)
+
+```bash
+./gradlew build
+./gradlew :server:run
+```
+
+Endpoints iniciais:
+
+- `GET /health` — healthcheck
+- `GET /api/v1/public/` — stub da superfície pública
+- `GET /api/v1/admin/` — stub da superfície admin
 
 ## Licença
 
