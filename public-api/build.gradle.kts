@@ -5,7 +5,3 @@ plugins {
 dependencies {
     implementation("io.ktor:ktor-server-core:${property("ktorVersion")}")
 }
-
-kotlin {
-    jvmToolchain(25)
-}

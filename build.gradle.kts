@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.0.21" apply false
-    id("io.ktor.plugin") version "3.0.3" apply false
+    kotlin("jvm") version "2.1.21" apply false
+    id("io.ktor.plugin") version "3.1.1" apply false
 }
 
 subprojects {
@@ -9,5 +9,11 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+            jvmToolchain(project.property("javaVersion").toString().toInt())
+        }
     }
 }

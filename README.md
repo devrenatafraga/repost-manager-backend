@@ -14,7 +14,7 @@ Decisões de arquitetura: [repost-documentation](https://github.com/devrenatafra
 
 ## Desenvolvimento local
 
-Requisitos: JDK 25 (LTS)
+Requisitos: **JDK 25 (LTS)** e **Gradle 9.7** (via wrapper `./gradlew`).
 
 ```bash
 ./gradlew build

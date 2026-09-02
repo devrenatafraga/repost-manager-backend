@@ -24,10 +24,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:${property("junitVersion")}")
 }
 
-kotlin {
-    jvmToolchain(25)
-}
-
 tasks.test {
     useJUnitPlatform()
 }
