@@ -11,6 +11,8 @@ dependencies {
     implementation(project(":admin-api"))
     implementation(project(":public-api"))
 
+    implementation(project(":persistence"))
+
     implementation("io.ktor:ktor-server-core:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-netty:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-content-negotiation:${property("ktorVersion")}")
