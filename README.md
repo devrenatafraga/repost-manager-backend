@@ -16,7 +16,7 @@ Decisões de arquitetura: [repost-documentation](https://github.com/devrenatafra
 
 Requisitos: **JDK 25 (LTS)** e **Gradle 9.7.0** (via wrapper `./gradlew`).
 
-Kotlin **2.3.0+** é necessário para bytecode/target JVM 25 ([What's new in 2.3.0](https://kotlinlang.org/docs/whatsnew23.html)).
+Kotlin **2.3.20** (suporte a JVM 25 e Gradle 9.x — [release notes](https://kotlinlang.org/docs/whatsnew2320.html)).
 
 ```bash
 ./gradlew build
