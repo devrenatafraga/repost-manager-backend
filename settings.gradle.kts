@@ -11,4 +11,4 @@ plugins {
 
 rootProject.name = "repost-manager-backend"
 
-include("server", "admin-api", "public-api")
+include("server", "admin-api", "public-api", "persistence")

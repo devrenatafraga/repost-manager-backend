@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: repost-postgres
+    environment:
+      POSTGRES_USER: repost
+      POSTGRES_PASSWORD: repost
+      POSTGRES_DB: repost
+    ports:
+      - "5432:5432"
+    volumes:
+      - repost_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U repost -d repost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  repost_pg_data:

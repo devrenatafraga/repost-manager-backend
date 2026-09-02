@@ -1,6 +1,8 @@
 package dev.repost.server
 
 import dev.repost.admin.configureAdminRoutes
+import dev.repost.db.DatabaseConfig
+import dev.repost.db.DatabaseMigrator
 import dev.repost.publicapi.configurePublicRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.get
@@ -19,6 +21,16 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.json.Json
 
 fun main() {
+    DatabaseConfig.fromEnvironment()?.let { config ->
+        val applied =
+            DatabaseMigrator.migrate(
+                jdbcUrl = config.jdbcUrl,
+                user = config.user,
+                password = config.password,
+            )
+        println("Flyway applied $applied migration(s)")
+    }
+
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
     embeddedServer(Netty, port = port, module = Application::module).start(wait = true)
 }
