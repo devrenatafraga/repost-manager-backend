@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
     application
 }
 
@@ -10,7 +11,6 @@ application {
 dependencies {
     implementation(project(":admin-api"))
     implementation(project(":public-api"))
-
     implementation(project(":persistence"))
 
     implementation("io.ktor:ktor-server-core:${property("ktorVersion")}")
@@ -18,11 +18,16 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:${property("ktorVersion")}")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-status-pages:${property("ktorVersion")}")
+    implementation("io.ktor:ktor-server-auth:${property("ktorVersion")}")
+    implementation("io.ktor:ktor-server-auth-jwt:${property("ktorVersion")}")
     implementation("io.github.smiley4:ktor-openapi:${property("ktorOpenApiVersion")}")
     implementation("io.github.smiley4:schema-kenerator-serialization:${property("schemaKeneratorVersion")}")
     implementation("ch.qos.logback:logback-classic:${property("logbackVersion")}")
 
     testImplementation("io.ktor:ktor-server-test-host:${property("ktorVersion")}")
+    testImplementation("io.ktor:ktor-client-content-negotiation:${property("ktorVersion")}")
+    testImplementation("org.testcontainers:junit-jupiter:${property("testcontainersVersion")}")
+    testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter:${property("junitVersion")}")
 }

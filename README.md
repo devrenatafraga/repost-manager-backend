@@ -55,6 +55,11 @@ Os testes de migration usam **Testcontainers** (Postgres efêmero) — a CI no G
 - `GET /openapi.json` — contrato OpenAPI
 - `GET /api/v1/public/` — stub da superfície pública
 - `GET /api/v1/admin/` — stub da superfície admin
+- `POST /api/v1/admin/auth/login` — login (JWT + cookie refresh)
+- `POST /api/v1/admin/auth/refresh` — renova access token
+- `POST /api/v1/admin/auth/logout` — encerra sessão
+
+Auth exige `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `ADMIN_EMAIL` e `ADMIN_PASSWORD_HASH` (BCrypt). Ver `.env.example`.
 
 ## Banco na nuvem
 

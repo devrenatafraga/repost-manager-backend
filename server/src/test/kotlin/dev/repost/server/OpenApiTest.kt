@@ -21,6 +21,7 @@ class OpenApiTest {
             assertTrue(body.contains("\"public\""), "must include public tag")
             assertTrue(body.contains("/api/v1/admin"), "must document admin path")
             assertTrue(body.contains("/api/v1/public"), "must document public path")
+            assertTrue(body.contains("/api/v1/admin/auth/login") || body.contains("login"), "must document auth when registered")
         }
     }
 }
