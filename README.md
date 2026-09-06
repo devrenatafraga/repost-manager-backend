@@ -58,6 +58,7 @@ Os testes de migration usam **Testcontainers** (Postgres efêmero) — a CI no G
 - `POST /api/v1/admin/auth/login` — login (JWT + cookie refresh; rate limit por IP + email)
 - `POST /api/v1/admin/auth/refresh` — renova access token (rate limit por IP)
 - `POST /api/v1/admin/auth/logout` — encerra sessão
+- `GET/POST /api/v1/admin/posts` e `GET/PUT/DELETE /api/v1/admin/posts/{id}` — CRUD de posts (JWT)
 
 Auth exige `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `ADMIN_EMAIL` e `ADMIN_PASSWORD_HASH` (BCrypt). CORS com credentials usa `CORS_ORIGINS` (padrão `http://localhost:5173`). Ver `.env.example`.
 
