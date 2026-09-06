@@ -29,7 +29,7 @@ class FlywayMigrationTest {
                 password = postgres.password,
             )
 
-        assertTrue(migrationsRun >= 3, "expected at least V1, V2 and V3")
+        assertTrue(migrationsRun >= 4, "expected at least V1–V4")
 
         DriverManager.getConnection(postgres.jdbcUrl, postgres.username, postgres.password).use { conn ->
             conn.createStatement().use { stmt ->
@@ -49,6 +49,7 @@ class FlywayMigrationTest {
                 assertTrue("users" in tables)
                 assertTrue("blogs" in tables)
                 assertTrue("posts" in tables)
+                assertTrue("refresh_tokens" in tables)
                 assertTrue("flyway_schema_history" in tables)
 
                 val blogIdColumnTables =

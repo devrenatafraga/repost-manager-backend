@@ -1,12 +1,18 @@
 package dev.repost.server
 
 import dev.repost.admin.configureAdminRoutes
+import dev.repost.admin.auth.AuthService
+import dev.repost.admin.auth.JwtConfig
+import dev.repost.admin.auth.JwtService
+import dev.repost.db.AdminSeeder
 import dev.repost.db.DatabaseConfig
+import dev.repost.db.DatabaseFactory
 import dev.repost.db.DatabaseMigrator
 import dev.repost.publicapi.configurePublicRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.openApi
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -17,25 +23,36 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.json.Json
 
 fun main() {
-    DatabaseConfig.fromEnvironment()?.let { config ->
+    val dbConfig = DatabaseConfig.fromEnvironment()
+    if (dbConfig != null) {
         val applied =
             DatabaseMigrator.migrate(
-                jdbcUrl = config.jdbcUrl,
-                user = config.user,
-                password = config.password,
+                jdbcUrl = dbConfig.jdbcUrl,
+                user = dbConfig.user,
+                password = dbConfig.password,
             )
         println("Flyway applied $applied migration(s)")
+        DatabaseFactory.connect(dbConfig)
+        AdminSeeder.seedFromEnvironment()
     }
 
+    val authService = buildAuthService()
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
-    embeddedServer(Netty, port = port, module = Application::module).start(wait = true)
+    embeddedServer(Netty, port = port) {
+        module(authService)
+    }.start(wait = true)
 }
 
-fun Application.module() {
+fun buildAuthService(): AuthService? {
+    val jwtConfig = JwtConfig.fromEnvironment() ?: return null
+    if (DatabaseConfig.fromEnvironment() == null) return null
+    return AuthService(JwtService(jwtConfig))
+}
+
+fun Application.module(authService: AuthService? = null) {
     install(ContentNegotiation) {
         json(
             Json {
@@ -79,6 +96,6 @@ fun Application.module() {
         }
 
         configurePublicRoutes()
-        configureAdminRoutes()
+        configureAdminRoutes(authService)
     }
 }

@@ -1,12 +1,16 @@
 package dev.repost.admin
 
+import dev.repost.admin.auth.AuthService
+import dev.repost.admin.auth.configureAuthRoutes
 import io.github.smiley4.ktoropenapi.get
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
 
-fun Route.configureAdminRoutes() {
+fun Route.configureAdminRoutes(authService: AuthService? = null) {
+    authService?.let { configureAuthRoutes(it) }
+
     route("/api/v1/admin") {
         get("/", {
             tags = listOf("admin")

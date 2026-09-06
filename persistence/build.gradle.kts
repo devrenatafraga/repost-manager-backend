@@ -11,6 +11,11 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${property("flywayVersion")}")
     implementation("org.flywaydb:flyway-database-postgresql:${property("flywayVersion")}")
     implementation("org.postgresql:postgresql:${property("postgresqlVersion")}")
+    implementation("org.jetbrains.exposed:exposed-core:${property("exposedVersion")}")
+    implementation("org.jetbrains.exposed:exposed-dao:${property("exposedVersion")}")
+    implementation("org.jetbrains.exposed:exposed-jdbc:${property("exposedVersion")}")
+    implementation("org.jetbrains.exposed:exposed-java-time:${property("exposedVersion")}")
+    implementation("org.mindrot:jbcrypt:${property("jbcryptVersion")}")
 
     testImplementation("org.testcontainers:junit-jupiter:${property("testcontainersVersion")}")
     testImplementation("org.testcontainers:postgresql:${property("testcontainersVersion")}")
