@@ -54,12 +54,12 @@ Os testes de migration usam **Testcontainers** (Postgres efêmero) — a CI no G
 - `GET /health` — healthcheck (funciona sem `DATABASE_URL`)
 - `GET /openapi.json` — contrato OpenAPI
 - `GET /api/v1/public/` — stub da superfície pública
-- `GET /api/v1/admin/` — stub da superfície admin
-- `POST /api/v1/admin/auth/login` — login (JWT + cookie refresh)
-- `POST /api/v1/admin/auth/refresh` — renova access token
+- `GET /api/v1/admin/` — stub da superfície admin (**exige** `Authorization: Bearer` quando auth está configurada)
+- `POST /api/v1/admin/auth/login` — login (JWT + cookie refresh; rate limit por IP + email)
+- `POST /api/v1/admin/auth/refresh` — renova access token (rate limit por IP)
 - `POST /api/v1/admin/auth/logout` — encerra sessão
 
-Auth exige `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `ADMIN_EMAIL` e `ADMIN_PASSWORD_HASH` (BCrypt). Ver `.env.example`.
+Auth exige `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `ADMIN_EMAIL` e `ADMIN_PASSWORD_HASH` (BCrypt). CORS com credentials usa `CORS_ORIGINS` (padrão `http://localhost:5173`). Ver `.env.example`.
 
 ## Banco na nuvem
 

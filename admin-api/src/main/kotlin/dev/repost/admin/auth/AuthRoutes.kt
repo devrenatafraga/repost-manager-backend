@@ -9,7 +9,10 @@ import io.ktor.server.routing.route
 import java.time.Duration
 import java.time.OffsetDateTime
 
-fun Route.configureAuthRoutes(authService: AuthService) {
+fun Route.configureAuthRoutes(
+    authService: AuthService,
+    rateLimiter: AuthRateLimiter = AuthRateLimiter(),
+) {
     route("/api/v1/admin/auth") {
         post("/login", {
             tags = listOf("admin")
@@ -26,9 +29,18 @@ fun Route.configureAuthRoutes(authService: AuthService) {
                 HttpStatusCode.Unauthorized to {
                     description = "Invalid credentials"
                 }
+                HttpStatusCode.TooManyRequests to {
+                    description = "Rate limited"
+                }
             }
         }) {
             val body = call.receive<LoginRequest>()
+            val clientKey = clientRateKey(call)
+            val rateKey = "login:$clientKey:${body.email.trim().lowercase()}"
+            if (!rateLimiter.tryAcquire(rateKey)) {
+                return@post call.respond(HttpStatusCode.TooManyRequests, mapOf("error" to "rate_limited"))
+            }
+
             val session =
                 authService.login(body.email, body.password)
                     ?: return@post call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid_credentials"))
@@ -53,8 +65,16 @@ fun Route.configureAuthRoutes(authService: AuthService) {
                 HttpStatusCode.Unauthorized to {
                     description = "Missing or invalid refresh cookie"
                 }
+                HttpStatusCode.TooManyRequests to {
+                    description = "Rate limited"
+                }
             }
         }) {
+            val clientKey = clientRateKey(call)
+            if (!rateLimiter.tryAcquire("refresh:$clientKey")) {
+                return@post call.respond(HttpStatusCode.TooManyRequests, mapOf("error" to "rate_limited"))
+            }
+
             val raw = call.request.cookies[AuthService.REFRESH_COOKIE]
             val session =
                 raw?.let { authService.refresh(it) }
@@ -83,6 +103,12 @@ fun Route.configureAuthRoutes(authService: AuthService) {
             call.respond(HttpStatusCode.NoContent)
         }
     }
+}
+
+private fun clientRateKey(call: io.ktor.server.application.ApplicationCall): String {
+    val forwarded = call.request.headers["X-Forwarded-For"]?.substringBefore(',')?.trim()
+    return forwarded?.takeIf { it.isNotEmpty() }
+        ?: call.request.local.remoteAddress
 }
 
 private fun io.ktor.server.application.ApplicationCall.setRefreshCookie(
