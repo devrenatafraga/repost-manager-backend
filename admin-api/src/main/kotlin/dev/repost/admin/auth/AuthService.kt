@@ -11,7 +11,7 @@ import java.util.Base64
 import java.util.HexFormat
 
 class AuthService(
-    private val jwtService: JwtService,
+    val jwtService: JwtService,
     private val refreshTtlDays: Long = 14,
 ) {
     data class Session(

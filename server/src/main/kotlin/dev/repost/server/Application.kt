@@ -1,9 +1,11 @@
 package dev.repost.server
 
 import dev.repost.admin.configureAdminRoutes
+import dev.repost.admin.auth.AuthRateLimiter
 import dev.repost.admin.auth.AuthService
 import dev.repost.admin.auth.JwtConfig
 import dev.repost.admin.auth.JwtService
+import dev.repost.admin.auth.installAdminJwtAuth
 import dev.repost.db.AdminSeeder
 import dev.repost.db.DatabaseConfig
 import dev.repost.db.DatabaseFactory
@@ -12,6 +14,8 @@ import dev.repost.publicapi.configurePublicRoutes
 import io.github.smiley4.ktoropenapi.OpenApi
 import io.github.smiley4.ktoropenapi.get
 import io.github.smiley4.ktoropenapi.openApi
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -19,6 +23,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
@@ -52,7 +57,10 @@ fun buildAuthService(): AuthService? {
     return AuthService(JwtService(jwtConfig))
 }
 
-fun Application.module(authService: AuthService? = null) {
+fun Application.module(
+    authService: AuthService? = null,
+    rateLimiter: AuthRateLimiter = AuthRateLimiter(),
+) {
     install(ContentNegotiation) {
         json(
             Json {
@@ -61,6 +69,10 @@ fun Application.module(authService: AuthService? = null) {
             },
         )
     }
+
+    installCorsFromEnvironment()
+
+    authService?.let { installAdminJwtAuth(it.jwtService) }
 
     install(OpenApi) {
         info {
@@ -96,6 +108,42 @@ fun Application.module(authService: AuthService? = null) {
         }
 
         configurePublicRoutes()
-        configureAdminRoutes(authService)
+        configureAdminRoutes(
+            authService = authService,
+            rateLimiter = rateLimiter,
+            protectWithJwt = authService != null,
+        )
+    }
+}
+
+fun Application.installCorsFromEnvironment() {
+    val origins =
+        System.getenv("CORS_ORIGINS")
+            ?.split(",")
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+            ?: listOf("http://localhost:5173")
+
+    install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowCredentials = true
+        origins.forEach { origin ->
+            val withoutScheme = origin.removePrefix("https://").removePrefix("http://")
+            val host = withoutScheme.substringBefore('/')
+            val schemes =
+                when {
+                    origin.startsWith("https://") -> listOf("https")
+                    origin.startsWith("http://") -> listOf("http")
+                    else -> listOf("http", "https")
+                }
+            allowHost(host, schemes = schemes)
+        }
     }
 }

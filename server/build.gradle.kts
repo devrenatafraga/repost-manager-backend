@@ -20,6 +20,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-auth:${property("ktorVersion")}")
     implementation("io.ktor:ktor-server-auth-jwt:${property("ktorVersion")}")
+    implementation("io.ktor:ktor-server-cors:${property("ktorVersion")}")
     implementation("io.github.smiley4:ktor-openapi:${property("ktorOpenApiVersion")}")
     implementation("io.github.smiley4:schema-kenerator-serialization:${property("schemaKeneratorVersion")}")
     implementation("ch.qos.logback:logback-classic:${property("logbackVersion")}")
