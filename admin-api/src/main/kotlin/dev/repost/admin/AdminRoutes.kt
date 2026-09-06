@@ -4,6 +4,7 @@ import dev.repost.admin.auth.ADMIN_JWT_AUTH
 import dev.repost.admin.auth.AuthRateLimiter
 import dev.repost.admin.auth.AuthService
 import dev.repost.admin.auth.configureAuthRoutes
+import dev.repost.admin.posts.configurePostRoutes
 import io.github.smiley4.ktoropenapi.get
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -28,6 +29,8 @@ fun Route.configureAdminRoutes(
 }
 
 private fun Route.adminSurfaceRoutes() {
+    configurePostRoutes()
+
     route("/api/v1/admin") {
         get("/", {
             tags = listOf("admin")
