@@ -54,6 +54,8 @@ Os testes de migration usam **Testcontainers** (Postgres efêmero) — a CI no G
 - `GET /health` — healthcheck (funciona sem `DATABASE_URL`)
 - `GET /openapi.json` — contrato OpenAPI
 - `GET /api/v1/public/` — stub da superfície pública
+- `GET /api/v1/public/posts` — lista posts `published` (anônimo)
+- `GET /api/v1/public/posts/{slug}` — post publicado por slug (404 se draft/inexistente)
 - `GET /api/v1/admin/` — stub da superfície admin (**exige** `Authorization: Bearer` quando auth está configurada)
 - `POST /api/v1/admin/auth/login` — login (JWT + cookie refresh; rate limit por IP + email)
 - `POST /api/v1/admin/auth/refresh` — renova access token (rate limit por IP)

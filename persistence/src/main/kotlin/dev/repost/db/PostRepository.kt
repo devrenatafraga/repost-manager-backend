@@ -48,6 +48,15 @@ object PostRepository {
                 .map { it.toPostRecord() }
         }
 
+    fun listPublished(blogId: UUID): List<PostRecord> =
+        transaction {
+            Posts
+                .selectAll()
+                .where { (Posts.blogId eq blogId) and (Posts.status eq "published") }
+                .orderBy(Posts.publishedAt to SortOrder.DESC, Posts.createdAt to SortOrder.DESC)
+                .map { it.toPostRecord() }
+        }
+
     fun findById(
         blogId: UUID,
         id: UUID,
@@ -69,6 +78,21 @@ object PostRepository {
                 .selectAll()
                 .where { (Posts.blogId eq blogId) and (Posts.slug eq slug) }
                 .map { it.toPostRecord() }
+                .singleOrNull()
+        }
+
+    fun findPublishedBySlug(
+        blogId: UUID,
+        slug: String,
+    ): PostRecord? =
+        transaction {
+            Posts
+                .selectAll()
+                .where {
+                    (Posts.blogId eq blogId) and
+                        (Posts.slug eq slug) and
+                        (Posts.status eq "published")
+                }.map { it.toPostRecord() }
                 .singleOrNull()
         }
 
