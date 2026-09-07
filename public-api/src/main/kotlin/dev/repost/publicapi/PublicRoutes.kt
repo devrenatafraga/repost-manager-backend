@@ -1,5 +1,6 @@
 package dev.repost.publicapi
 
+import dev.repost.publicapi.posts.configurePublicPostRoutes
 import io.github.smiley4.ktoropenapi.get
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
@@ -7,6 +8,8 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.route
 
 fun Route.configurePublicRoutes() {
+    configurePublicPostRoutes()
+
     route("/api/v1/public") {
         get("/", {
             tags = listOf("public")
