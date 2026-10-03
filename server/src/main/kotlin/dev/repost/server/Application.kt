@@ -46,7 +46,7 @@ fun main() {
 
     val authService = buildAuthService()
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
-    embeddedServer(Netty, port = port) {
+    embeddedServer(Netty, port = port, host = "0.0.0.0") {
         module(authService)
     }.start(wait = true)
 }
