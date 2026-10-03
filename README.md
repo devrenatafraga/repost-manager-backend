@@ -80,7 +80,7 @@ No serviço Koyeb, builder **Dockerfile**, região free (Frankfurt ou Washington
 | `ADMIN_PASSWORD_HASH` | sim | Hash BCrypt, não a senha em texto |
 | `CORS_ORIGINS` | sim | Origem do manager (URL da Vercel), separada por vírgula |
 | `API_BASE_URL` | sim | URL pública `https://…koyeb.app` |
-| `COOKIE_SECURE` | sim | `true` em HTTPS |
+| `COOKIE_SECURE` | sim | `true` em HTTPS. Com `true`, o cookie de refresh sai `SameSite=None` para o manager na Vercel conseguir guardá-lo |
 | `PORT` | não | O Koyeb define |
 
 Na subida, o Flyway aplica as migrations se o banco estiver configurado. O schema também pode ser aplicado antes, no Mac, com `./gradlew :persistence:flywayMigrate`.

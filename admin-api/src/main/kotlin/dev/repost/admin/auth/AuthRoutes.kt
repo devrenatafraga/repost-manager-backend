@@ -111,31 +111,35 @@ private fun clientRateKey(call: io.ktor.server.application.ApplicationCall): Str
         ?: call.request.local.remoteAddress
 }
 
+internal fun refreshCookieSameSite(secure: Boolean): String = if (secure) "None" else "Strict"
+
 private fun io.ktor.server.application.ApplicationCall.setRefreshCookie(
     token: String,
     expiresAt: OffsetDateTime,
 ) {
     val maxAge = Duration.between(OffsetDateTime.now(), expiresAt).seconds.coerceAtLeast(0)
+    val secure = isSecureCookies()
     response.cookies.append(
         name = AuthService.REFRESH_COOKIE,
         value = token,
         maxAge = maxAge,
         path = "/api/v1/admin/auth",
         httpOnly = true,
-        secure = isSecureCookies(),
-        extensions = mapOf("SameSite" to "Strict"),
+        secure = secure,
+        extensions = mapOf("SameSite" to refreshCookieSameSite(secure)),
     )
 }
 
 private fun io.ktor.server.application.ApplicationCall.clearRefreshCookie() {
+    val secure = isSecureCookies()
     response.cookies.append(
         name = AuthService.REFRESH_COOKIE,
         value = "",
         maxAge = 0,
         path = "/api/v1/admin/auth",
         httpOnly = true,
-        secure = isSecureCookies(),
-        extensions = mapOf("SameSite" to "Strict"),
+        secure = secure,
+        extensions = mapOf("SameSite" to refreshCookieSameSite(secure)),
     )
 }
 
