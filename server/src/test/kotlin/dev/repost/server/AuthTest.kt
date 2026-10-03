@@ -127,6 +127,8 @@ class AuthTest {
                 }
             val refreshCookie = extractRefreshCookie(login)
             assertNotNull(refreshCookie)
+            val setCookie = login.headers.getAll(HttpHeaders.SetCookie).orEmpty().joinToString(" ")
+            assertTrue(setCookie.contains("SameSite=Strict"))
 
             val refreshed =
                 client.post("/api/v1/admin/auth/refresh") {
