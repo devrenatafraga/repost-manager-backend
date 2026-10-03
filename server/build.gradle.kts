@@ -6,6 +6,12 @@ plugins {
 
 application {
     mainClass.set("dev.repost.server.ApplicationKt")
+    applicationDefaultJvmArgs =
+        listOf(
+            "-Xmx256m",
+            "-XX:MaxMetaspaceSize=96m",
+            "-XX:+UseSerialGC",
+        )
 }
 
 dependencies {

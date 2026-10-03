@@ -64,9 +64,26 @@ Os testes de migration usam **Testcontainers** (Postgres efêmero) — a CI no G
 
 Auth exige `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `ADMIN_EMAIL` e `ADMIN_PASSWORD_HASH` (BCrypt). CORS com credentials usa `CORS_ORIGINS` (padrão `http://localhost:5173`). Ver `.env.example`.
 
-## Banco na nuvem
+## Deploy (Koyeb)
 
-Provisionamento (Neon, secrets de deploy) fica para quando a app for publicada. O schema já está versionado em `persistence/src/main/resources/db/migration/`.
+Imagem em [`Dockerfile`](Dockerfile): build Gradle e runtime **JRE 25**. A distribuição já sobe com `-Xmx256m -XX:MaxMetaspaceSize=96m` para caber na instância gratuita (~512 MB). O processo escuta `0.0.0.0` e a porta `PORT` (padrão 8080). Health check: `GET /health`.
+
+No serviço Koyeb, builder **Dockerfile**, região free (Frankfurt ou Washington), e estas variáveis. Não commite os valores.
+
+| Variável | Obrigatória | Notas |
+| --- | --- | --- |
+| `DATABASE_URL` | sim | JDBC, **sem** usuário/senha na URL. Ex.: `jdbc:postgresql://HOST/neondb?sslmode=require` |
+| `DATABASE_USER` | sim | Usuário do Neon |
+| `DATABASE_PASSWORD` | sim | Senha do Neon |
+| `JWT_SECRET` | sim | Pelo menos 32 caracteres |
+| `ADMIN_EMAIL` | sim | Email do admin |
+| `ADMIN_PASSWORD_HASH` | sim | Hash BCrypt, não a senha em texto |
+| `CORS_ORIGINS` | sim | Origem do manager (URL da Vercel), separada por vírgula |
+| `API_BASE_URL` | sim | URL pública `https://…koyeb.app` |
+| `COOKIE_SECURE` | sim | `true` em HTTPS |
+| `PORT` | não | O Koyeb define |
+
+Na subida, o Flyway aplica as migrations se o banco estiver configurado. O schema também pode ser aplicado antes, no Mac, com `./gradlew :persistence:flywayMigrate`.
 
 ## Licença
 
